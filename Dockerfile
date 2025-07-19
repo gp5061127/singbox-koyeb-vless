@@ -1,8 +1,9 @@
 FROM alpine:latest
 
-RUN apk add --no-cache curl tar
+RUN apk add --no-cache wget busybox-extras
 
-RUN curl -L -o /tmp/sing-box.tar.gz https://github.com/SagerNet/sing-box/releases/latest/download/sing-box-linux-amd64.tar.gz && \
+RUN wget -O /tmp/sing-box.tar.gz https://github.com/SagerNet/sing-box/releases/latest/download/sing-box-linux-amd64.tar.gz && \
+    ls -lh /tmp/sing-box.tar.gz && \
     tar -xzf /tmp/sing-box.tar.gz -C /tmp && \
     mv /tmp/sing-box-*/sing-box /usr/local/bin/sing-box && \
     chmod +x /usr/local/bin/sing-box && \
