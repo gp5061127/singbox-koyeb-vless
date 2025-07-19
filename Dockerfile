@@ -1,20 +1,19 @@
 FROM alpine:latest
 
-# 安装 curl 等依赖
-RUN apk add --no-cache curl bash
+RUN apk add --no-cache curl unzip
 
-# 下载并解压 sing-box
-RUN curl -L -o sing-box.tar.gz https://github.com/SagerNet/sing-box/releases/download/v1.8.0/sing-box-1.8.0-linux-amd64.tar.gz \
- && tar -xzf sing-box.tar.gz \
- && mv sing-box-*/sing-box /usr/local/bin/sing-box \
- && chmod +x /usr/local/bin/sing-box \
- && rm -rf sing-box*
+RUN curl -L -o /tmp/sing-box.zip https://github.com/SagerNet/sing-box/releases/latest/download/sing-box-linux-amd64.zip && \
+    unzip /tmp/sing-box.zip -d /usr/local/bin && \
+    chmod +x /usr/local/bin/sing-box && \
+    rm /tmp/sing-box.zip
 
-# 拷贝配置文件
+RUN mkdir -p /etc/sing-box
+
 COPY config.json /etc/sing-box/config.json
 COPY entrypoint.sh /entrypoint.sh
+RUN chmod +x /entrypoint.sh
+RUN chmod +x /usr/local/bin/sing-box
 
-# 暴露 WebSocket 端口
-EXPOSE 8080
+EXPOSE 80
 
-CMD ["/entrypoint.sh"]
+ENTRYPOINT ["/entrypoint.sh"]
